@@ -11,7 +11,9 @@ import { useEffect, useState } from "react";
 import { auth } from "../firebaseSetup";
 import {
   createUserWithEmailAndPassword,
+  GoogleAuthProvider,
   signInWithEmailAndPassword,
+  signInWithPopup,
 } from "firebase/auth";
 import { useNavigation } from "@react-navigation/native";
 
@@ -20,11 +22,9 @@ function LoginScreen() {
   const [password, setPassword] = useState("");
 
   const navigation = useNavigation();
-  //   console.log(navigation().navigate);
 
   useEffect(() => {
     const unsubscribe = auth.onAuthStateChanged((user) => {
-      console.log(user);
       if (user) {
         navigation.navigate("Home");
       }
@@ -55,6 +55,26 @@ function LoginScreen() {
       .catch((error) => {
         alert(error.message);
       });
+  };
+
+  const handleSignInWithGoogle = () => {
+    const provider = GoogleAuthProvider;
+    signInWithPopup(auth, provider).then((result) => {
+      console.log("Hi");
+      // const credential = GoogleAuthProvider().credentialFromResult(result);
+      // console.log(credential);
+      // const token = credential.accessToken;
+      // const user = result.user;
+      // console.log(user);
+    });
+    //   .catch((error) => {
+    //     console.log("made it to error");
+    //     const errorCode = error.code;
+    //     const errorMessage = error.message;
+    //     const email = error.customData.email;
+    //     const credential = GoogleAuthProvider.credentialFromError(error);
+    //     console.log(errorMessage, credential);
+    //   });
   };
 
   return (
@@ -100,6 +120,18 @@ function LoginScreen() {
         >
           <Text style={[styles.buttonText, styles.buttonOutlineText]}>
             Register
+          </Text>
+        </TouchableOpacity>
+      </View>
+      <View style={styles.buttonContainer}>
+        <TouchableOpacity
+          onPress={() => {
+            handleSignInWithGoogle();
+          }}
+          style={[styles.button, styles.buttonOutline]}
+        >
+          <Text style={[styles.buttonText, styles.buttonOutlineText]}>
+            Sign in with Google
           </Text>
         </TouchableOpacity>
       </View>
